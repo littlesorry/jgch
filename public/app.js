@@ -4,7 +4,21 @@
 
 	var game = window.game = ns.game = {
 		frames: 0,
-		events: Q.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"]
+		events: Q.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"],
+
+		state: "not_completed"
+	};
+
+	function buildBackground(id, imageId) {
+		var page = new Q.Bitmap({"id": id, "image": ns.R.getImage(imageId)});
+        var sX = game.stage.width/page.width;
+		var sY = game.stage.height/page.height;
+        page.scaleX = sX;
+        page.scaleY = sY;
+        page.x = 0;
+        page.y = 0;
+
+        return page;
 	};
 
 	game.bootstrap = function() {
@@ -93,24 +107,17 @@
 
 	game.displayPage1 = function() {	
 		if(this.startPage == null) {
-			var startPage = new Q.Bitmap({id:"startPage", image: ns.R.getImage("page1")});
-	        var sX = this.stage.width/startPage.width;
-			var sY = this.stage.height/startPage.height;
-	        startPage.scaleX = sX;
-	        startPage.scaleY = sY;
-	        startPage.x = 0;
-	        startPage.y = 0;
-			this.startPage = startPage;
+			this.startPage = buildBackground("startPage", "page1");
 
 			var playBtn = new Q.Button({id:"playBtn", image: ns.R.getImage("button")});
 			playBtn.setUpState({rect:[0,0,450,67]});
 			playBtn.setOverState({rect:[0,0,450,67]});
 			playBtn.width= 450;
 			playBtn.height = 67;
-			playBtn.scaleX = sX;
-			playBtn.scaleY = sY;
+			playBtn.scaleX = this.startPage.scaleX;
+			playBtn.scaleY = this.startPage.scaleY;
 			playBtn.x = this.width * 0.15;
-			playBtn.y = this.height - (this.height*0.47);
+			playBtn.y = this.height * 0.53;
 			playBtn.on(game.EVENTS.TAP, function(e) {
 				game.displayPage2();
 			});
@@ -125,7 +132,6 @@
 	};
 
 	game.displayPage2 = function() {	
-		game.stage.removeAllChildren();
 		if(this.startRollingPage == null) {
 			var startRollingPage = new Q.Bitmap({id:"startRollingPage", image: ns.R.getImage("page2")});
 	        var sX = this.stage.width/startRollingPage.width;
@@ -134,17 +140,17 @@
 	        startRollingPage.scaleY = sY;
 	        startRollingPage.x = 0;
 	        startRollingPage.y = 0;
-			this.startRollingPage = startRollingPage;
+			this.startRollingPage = buildBackground("startRollingPage", "page2");
 
 			var startRollingBtn = new Q.Button({id:"startRollingBtn", image: ns.R.getImage("button")});
 			startRollingBtn.setUpState({rect:[0,0,450,67]});
 			startRollingBtn.setOverState({rect:[0,0,450,67]});
 			startRollingBtn.width= 450;
 			startRollingBtn.height = 67;
-			startRollingBtn.scaleX = sX;
-			startRollingBtn.scaleY = sY;
+			startRollingBtn.scaleX = this.startRollingPage.scaleX;
+			startRollingBtn.scaleY = this.startRollingPage.scaleY;
 			startRollingBtn.x = this.width * 0.15;
-			startRollingBtn.y = this.height - (this.height*0.47);
+			startRollingBtn.y = this.height * 0.53;
 			startRollingBtn.on(game.EVENTS.TAP, function(e) {
 				game.displayPage2b();
 			});
@@ -160,26 +166,20 @@
 
 	game.displayPage2b = function() {	
 		if(this.stopRollingPage == null) {
-			var stopRollingPage = new Q.Bitmap({id:"stopRollingPage", image: ns.R.getImage("page2b")});
-	        var sX = this.stage.width/stopRollingPage.width;
-			var sY = this.stage.height/stopRollingPage.height;
-	        stopRollingPage.scaleX = sX;
-	        stopRollingPage.scaleY = sY;
-	        stopRollingPage.x = 0;
-	        stopRollingPage.y = 0;
-			this.stopRollingPage = stopRollingPage;
+			this.stopRollingPage = buildBackground("stopRollingPage", "page2b");
 
 			var stopRollingBtn = new Q.Button({id:"stopRollingBtn", image: ns.R.getImage("button")});
 			stopRollingBtn.setUpState({rect:[0,0,450,67]});
 			stopRollingBtn.setOverState({rect:[0,0,450,67]});
 			stopRollingBtn.width= 450;
 			stopRollingBtn.height = 67;
-			stopRollingBtn.scaleX = sX;
-			stopRollingBtn.scaleY = sY;
+			stopRollingBtn.scaleX = this.stopRollingPage.scaleX;
+			stopRollingBtn.scaleY = this.stopRollingPage.scaleY;
 			stopRollingBtn.x = this.width * 0.15;
-			stopRollingBtn.y = this.height - (this.height*0.47);
+			stopRollingBtn.y = this.height * 0.53;
 			stopRollingBtn.on(game.EVENTS.TAP, function(e) {
-				console.log(1);
+				game.state = "complete";
+				game.displayPage3();
 			});
 
 			this.stopRollingBtn = stopRollingBtn;
@@ -191,6 +191,171 @@
 		this.stage.step();
 	};
 
+	game.displayPage3 = function() {
+		if(this.congratulationMask == null) {
+			this.congratulationMask = buildBackground("congratulationMask", "page3");
+
+			var confirmCongratulationBtn = new Q.Button({id:"confirmCongratulationBtn", image: ns.R.getImage("button")});
+			confirmCongratulationBtn.setUpState({rect:[0,0,575,525]});
+			confirmCongratulationBtn.setOverState({rect:[0,0,575,525]});
+			confirmCongratulationBtn.width= 575;
+			confirmCongratulationBtn.height = 525;
+			confirmCongratulationBtn.scaleX = this.congratulationMask.scaleX;
+			confirmCongratulationBtn.scaleY = this.congratulationMask.scaleY;
+			confirmCongratulationBtn.x = this.width * 0.05;
+			confirmCongratulationBtn.y = this.height * 0.14;
+			confirmCongratulationBtn.on(game.EVENTS.TAP, function(e) {
+				game.displayPage4();
+			});
+
+			this.confirmCongratulationBtn = confirmCongratulationBtn;
+		}
+		
+		this.stage.addChild(
+					this.congratulationMask
+					, this.confirmCongratulationBtn);
+		this.stage.step();
+	};
+
+	game.displayPage4 = function() {	
+		if(this.couponPage == null) {
+			var couponPage = new Q.Bitmap({id:"couponPage", image: ns.R.getImage("page4")});
+	        var sX = this.stage.width/couponPage.width;
+			var sY = this.stage.height/couponPage.height;
+	        couponPage.scaleX = sX;
+	        couponPage.scaleY = sY;
+	        couponPage.x = 0;
+	        couponPage.y = 0;
+			this.couponPage = buildBackground("couponPage", "page4");
+
+			var shareBtn = new Q.Button({id:"shareBtn", image: ns.R.getImage("button")});
+			shareBtn.setUpState({rect:[0,0,450,67]});
+			shareBtn.setOverState({rect:[0,0,450,67]});
+			shareBtn.width= 450;
+			shareBtn.height = 67;
+			shareBtn.scaleX = this.couponPage.scaleX;
+			shareBtn.scaleY = this.couponPage.scaleY;
+			shareBtn.x = this.width * 0.15;
+			shareBtn.y = this.height * 0.665;
+			shareBtn.on(game.EVENTS.TAP, function(e) {
+				game.state = 'do_share';
+				game.displayPage5();
+			});
+
+			this.shareBtn = shareBtn;
+
+			// TODO, second button not used
+
+
+			var exchangeBtn = new Q.Button({id:"exchangeBtn", image: ns.R.getImage("button")});
+			exchangeBtn.setUpState({rect:[0,0,450,67]});
+			exchangeBtn.setOverState({rect:[0,0,450,67]});
+			exchangeBtn.width= 450;
+			exchangeBtn.height = 67;
+			exchangeBtn.scaleX = this.couponPage.scaleX;
+			exchangeBtn.scaleY = this.couponPage.scaleY;
+			exchangeBtn.x = this.width * 0.15;
+			exchangeBtn.y = this.height * 0.84;
+			exchangeBtn.on(game.EVENTS.TAP, function(e) {
+				game.displayPage6();
+			});
+
+			this.exchangeBtn = exchangeBtn;
+		}
+		
+		this.stage.addChild(
+					this.couponPage
+					, this.shareBtn
+					, this.exchangeBtn);
+		this.stage.step();
+	};
+
+	game.displayPage5 = function() {	
+		if(this.sharePage == null) {
+			this.sharePage = buildBackground("sharePage", "page5");
+		}
+		
+		this.stage.addChild(
+					this.sharePage);
+		this.stage.step();
+	};
+
+
+	game.hidePage5 = function() {	
+		if(this.sharePage) {
+			this.stage.removeChildById("sharePage");
+			this.stage.step();
+		}
+	};
+
+	game.displayPage6 = function() {
+		if(this.exchangePage == null) {
+			this.exchangePage = buildBackground("exchangePage", "page6");
+
+			var doSubmitBtn = new Q.Button({id:"doSubmitBtn", image: ns.R.getImage("button")});
+			doSubmitBtn.setUpState({rect:[0,0,310,85]});
+			doSubmitBtn.setOverState({rect:[0,0,310,85]});
+			doSubmitBtn.width= 310;
+			doSubmitBtn.height = 85;
+			doSubmitBtn.scaleX = this.exchangePage.scaleY;
+			doSubmitBtn.scaleY = this.exchangePage.scaleY;
+			doSubmitBtn.x = this.width * 0.51;
+			doSubmitBtn.y = this.height * 0.585;
+			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
+				game.stage.removeChildById("exchangePage", "exchangeBtn", "doSubmitBtn");
+			});
+
+			this.doSubmitBtn = doSubmitBtn;
+
+
+			var cancelSubmitBtn = new Q.Button({id:"cancelSubmitBtn", image: ns.R.getImage("button")});
+			cancelSubmitBtn.setUpState({rect:[0,0,310,85]});
+			cancelSubmitBtn.setOverState({rect:[0,0,310,85]});
+			cancelSubmitBtn.width= 310;
+			cancelSubmitBtn.height = 85;
+			cancelSubmitBtn.scaleX = this.exchangePage.scaleY;
+			cancelSubmitBtn.scaleY = this.exchangePage.scaleY;
+			cancelSubmitBtn.x = this.width * 0.05;
+			cancelSubmitBtn.y = this.height * 0.585;
+			cancelSubmitBtn.on(game.EVENTS.TAP, function(e) {
+				game.stage.removeChildById("exchangePage");
+				game.stage.removeChildById("doSubmitBtn");
+				game.stage.removeChildById("cancelSubmitBtn");
+				$("#memberIdInput").remove();
+			});
+
+			this.cancelSubmitBtn = cancelSubmitBtn;
+		}
+		
+		this.stage.addChild(
+					this.exchangePage
+					, this.doSubmitBtn
+					, this.cancelSubmitBtn);
+		this.stage.step();
+
+	    var phoneNumInput = Q.createDOM("input"
+					, {
+						id:"memberIdInput"
+						, type: "text"
+						, maxlength: 15
+						, placeholder: "卡号"
+						, style : {
+							position:"absolute",
+							top : 378 * game.cancelSubmitBtn.scaleY + "px",
+							left: 310 * game.cancelSubmitBtn.scaleX + "px",
+							width: 280 * game.cancelSubmitBtn.scaleX + "px",
+							height: 40 * game.cancelSubmitBtn.scaleY + "px",
+							background: "transparent",
+							border: "none",
+							"text-align": "left",
+							"padding-left": "5px",
+							"color": "#333",
+							"z-index": $("#doSubmitBtn").css("z-index"),
+							"font": "20px 黑体"
+						}
+					});
+    	$("body").prepend(phoneNumInput);
+	};
 
 	$(function() {
 		game.bootstrap();
