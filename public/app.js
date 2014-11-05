@@ -192,12 +192,8 @@
 	};
 
 
-
-
 	$(function() {
 		game.bootstrap();
 	});
-
-
 
 })();

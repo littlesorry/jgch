@@ -1,12 +1,14 @@
 var express = require('express');
+var session = require('express-session')
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var wechat = require('./routes/wechat');
 
 var app = express();
 
@@ -19,11 +21,26 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
+
+app.use(session({secret: 'keyboard cat', cookie: {maxAge: 1800000}}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(req, res, next) {
+    if (!req.session.wecharCredential) {
+        res.redirect('https://open.weixin.qq.com/connect/oauth2/authorize'
+            + '?appid=wx770d10bc9719912f' 
+            + '&redirect_uri=' + encodeURIComponent('http://jgch.autobund.com.cn:9000/')
+            + '&response_type=code'
+            + '&scope=snsapi_login'
+            + '&state=' + encodeURIComponent(req.session.id)
+            + '#wechat_redirect');
+    }
+});
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/wechat', wechat);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
