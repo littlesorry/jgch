@@ -32,7 +32,7 @@
 	//加载进度条
 	game.onLoadLoaded = function(e) {
 		this.loader.innerHTML = "正在加载资源中，请稍候...<br>";
-		this.loader.innerHTML += "(" + Math.round(e.target.getLoadedSize()/e.target.getTotalSize()*100) + "%)";
+		this.loader.innerHTML += "(" + Math.round(e.target.getLoaded() / e.target.getTotal() * 100) + "%)";
 	};
 
 		//加载完成
