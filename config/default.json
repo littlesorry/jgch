@@ -1,0 +1,13 @@
+{
+    "app": {
+        "runtime": {
+            "port": 9000
+        },
+        "integration": {
+            "wechatAppId": "wx770d10bc9719912f",
+            "wechatAppScret": "1327911330e014bcfed634ed419a2c0b",
+            "wechatCallbackURL": "http://jgch.autobund.com.cn:9000/",
+            "wechatOAuthURL": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx770d10bc9719912f&redirect_uri=&response_type=code&scope=snsapi_login&state=#wechat_redirect"
+        }
+    }
+}

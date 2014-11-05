@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(cookieParser());
 
-app.use(session({secret: 'keyboard cat', cookie: {maxAge: 1800000}}));
+app.use(session({secret: 'keyboard cat', resave: true, saveUninitialized: true, cookie: {maxAge: 1800000}}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(function(req, res, next) {
