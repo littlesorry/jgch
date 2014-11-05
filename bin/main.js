@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 var debug = require('debug')('jgch');
 var app = require('../app');
 
