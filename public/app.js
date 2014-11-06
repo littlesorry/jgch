@@ -341,9 +341,9 @@
 						, placeholder: "卡号"
 						, style : {
 							position:"absolute",
-							top : 378 * game.cancelSubmitBtn.scaleY + "px",
-							left: 310 * game.cancelSubmitBtn.scaleX + "px",
-							width: 280 * game.cancelSubmitBtn.scaleX + "px",
+							top : (game.height * 0.375) + "px",
+							left: (game.width * 0.45) + "px",
+							width: (game.width * 0.38)+ "px",
 							height: 40 * game.cancelSubmitBtn.scaleY + "px",
 							background: "transparent",
 							border: "none",
