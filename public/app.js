@@ -89,6 +89,13 @@
 		//创建舞台
 		this.stage = new Q.Stage({width:this.width, height:this.height, context:this.context, update:Q.delegate(this.update, this)});
 
+		var timer = new Q.Timer(1000 / 30);
+		timer.addListener(this.stage);
+		timer.addListener(Q.Tween);
+		timer.start();
+		this.timer = timer;
+
+
 		//注册事件
 		var em = new Q.EventManager();
 		this.EVENTS = {
@@ -133,13 +140,6 @@
 
 	game.displayPage2 = function() {	
 		if(this.startRollingPage == null) {
-			var startRollingPage = new Q.Bitmap({id:"startRollingPage", image: ns.R.getImage("page2")});
-	        var sX = this.stage.width/startRollingPage.width;
-			var sY = this.stage.height/startRollingPage.height;
-	        startRollingPage.scaleX = sX;
-	        startRollingPage.scaleY = sY;
-	        startRollingPage.x = 0;
-	        startRollingPage.y = 0;
 			this.startRollingPage = buildBackground("startRollingPage", "page2");
 
 			var startRollingBtn = new Q.Button({id:"startRollingBtn", image: ns.R.getImage("button")});
@@ -156,12 +156,89 @@
 			});
 
 			this.startRollingBtn = startRollingBtn;
+
+			var leftStick = new Q.Bitmap({
+									"id": "leftStick",
+									"image": ns.R.getImage("leftStick")
+								});
+	        leftStick.scaleX = this.startRollingPage.scaleX;
+	        leftStick.scaleY = this.startRollingPage.scaleY;
+	        leftStick.x = this.width * 0.15;
+	        leftStick.y = this.height * 0.70;
+
+	        this.leftStick = leftStick;
+
+			var rightStick = new Q.Bitmap({"id": "rightStick", "image": ns.R.getImage("rightStick")});
+	        rightStick.scaleX = this.startRollingPage.scaleX;
+	        rightStick.scaleY = this.startRollingPage.scaleY;
+	        rightStick.x = this.width * 0.60;
+	        rightStick.y = this.height * 0.70;
+
+	        this.rightStick = rightStick;
+
+			var leftWave = new Q.Bitmap({"id": "leftWave", "image": ns.R.getImage("wave")});
+	        leftWave.scaleX = this.startRollingPage.scaleX;
+	        leftWave.scaleY = this.startRollingPage.scaleY;
+	        leftWave.x = this.width * 0.28;
+	        leftWave.y = this.height * 0.68;
+
+	        this.leftWave = leftWave;
+
+			var rightWave = new Q.Bitmap({"id": "rightWave", "image": ns.R.getImage("wave")});
+	        rightWave.scaleX = this.startRollingPage.scaleX;
+	        rightWave.scaleY = this.startRollingPage.scaleY;
+	        rightWave.x = this.width * 0.55;
+	        rightWave.y = this.height * 0.675;
+	        rightWave.alpha = 0
+
+	        this.rightWave = rightWave;
 		}
 		
 		this.stage.addChild(
 					this.startRollingPage
-					, this.startRollingBtn);
+					, this.startRollingBtn
+					, this.leftWave
+					, this.rightWave
+					, this.leftStick
+					, this.rightStick);
 		this.stage.step();
+
+    	Q.Tween.to(this.rightWave
+					, {alpha: 1}
+					, {
+						time: 600
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+		Q.Tween.to(this.leftWave
+					, {alpha: 0}
+					, {
+						time: 600
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+    	Q.Tween.to(this.leftStick
+					, {y: this.leftStick.y - 20}
+					, {
+						time: 600
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+    	Q.Tween.to(this.rightStick
+					, {y: this.rightStick.y - 20}
+					, {
+						time: 600
+						, delay: 600
+						, loop: true
+						, reverse: true
+    				}
+    	);
 	};
 
 	game.displayPage2b = function() {	
