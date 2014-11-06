@@ -301,12 +301,15 @@
 			doSubmitBtn.setOverState({rect:[0,0,310,85]});
 			doSubmitBtn.width= 310;
 			doSubmitBtn.height = 85;
-			doSubmitBtn.scaleX = this.exchangePage.scaleY;
+			doSubmitBtn.scaleX = this.exchangePage.scaleX;
 			doSubmitBtn.scaleY = this.exchangePage.scaleY;
 			doSubmitBtn.x = this.width * 0.51;
 			doSubmitBtn.y = this.height * 0.585;
 			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
-				game.stage.removeChildById("exchangePage", "exchangeBtn", "doSubmitBtn");
+				game.stage.removeChildById("exchangePage");
+				game.stage.removeChildById("doSubmitBtn");
+				game.stage.removeChildById("cancelSubmitBtn");
+				$("#memberIdInput").remove();
 			});
 
 			this.doSubmitBtn = doSubmitBtn;
@@ -317,7 +320,7 @@
 			cancelSubmitBtn.setOverState({rect:[0,0,310,85]});
 			cancelSubmitBtn.width= 310;
 			cancelSubmitBtn.height = 85;
-			cancelSubmitBtn.scaleX = this.exchangePage.scaleY;
+			cancelSubmitBtn.scaleX = this.exchangePage.scaleX;
 			cancelSubmitBtn.scaleY = this.exchangePage.scaleY;
 			cancelSubmitBtn.x = this.width * 0.05;
 			cancelSubmitBtn.y = this.height * 0.585;
@@ -331,12 +334,6 @@
 			this.cancelSubmitBtn = cancelSubmitBtn;
 		}
 		
-		this.stage.addChild(
-					this.exchangePage
-					, this.doSubmitBtn
-					, this.cancelSubmitBtn);
-		this.stage.step();
-
 	    var phoneNumInput = Q.createDOM("input"
 					, {
 						id:"memberIdInput"
@@ -358,6 +355,13 @@
 							"font": "20px 黑体"
 						}
 					});
+
+		this.stage.addChild(
+			this.exchangePage
+			, this.doSubmitBtn
+				, this.cancelSubmitBtn);
+		this.stage.step();
+
     	$("body").prepend(phoneNumInput);
 	};
 
