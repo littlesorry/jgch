@@ -3,7 +3,7 @@
 
 	var wechat = ns.wechat = {};
 
-    var imgUrl = "http://game.womsalon.com/monkey/images/shareimg_l_update.png";
+    var imgUrl = "https://open.weixin.qq.com/cgi-bin/openproxy?url=http%3A%2F%2Fmmbiz.qpic.cn%2Fmmbiz%2FzUOpE4ibVNqnZX3gGh6nibibJHyia4YkibGpwBibrShgTBe3AVe4INlQrtfAMledicscUUOS8TKh6Vl5022XvFCUN4ibPA%2F0";
     var shareLink = "http://jgch.autobund.com.cn:9000/wechat/";
 
 	var descContent = "我赢取了好途邦的洗车代金券！离免费代金券只差一步，快来赢取！【好途邦】";
