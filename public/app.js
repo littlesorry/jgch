@@ -238,8 +238,12 @@
 			shareBtn.x = this.width * 0.15;
 			shareBtn.y = this.height * 0.665;
 			shareBtn.on(game.EVENTS.TAP, function(e) {
-				game.state = 'do_share';
-				game.displayPage5();
+				if (WeixinApi.openInWeixin()) {
+					game.state = 'do_share';
+					game.displayPage5();
+				} else {
+					alert("请在微信中访问本游戏。");					
+				}
 			});
 
 			this.shareBtn = shareBtn;

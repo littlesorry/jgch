@@ -10,6 +10,10 @@
  * 7、获取当前的网络状态
  * 8、调起微信客户端的图片播放组件
  * 9、关闭公众平台Web页面
+ * 10、判断当前网页是否在微信内置浏览器中打开
+ * 11、增加打开扫描二维码
+ * 12、支持WeixinApi的错误监控
+ * 13、检测应用程序是否已经安装（需要官方开通权限）
  *
  * @author zhaoxianlie(http://www.baidufe.com)
  */
@@ -393,9 +397,25 @@ var WeixinApi = (function () {
 
     /**
      * 关闭当前微信公众平台页面
+     * @param       {Object}    callbacks       回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功
      */
-    function closeWindow() {
-        WeixinJSBridge.call("closeWindow");
+    function closeWindow(callbacks) {
+        callbacks = callbacks || {};
+        WeixinJSBridge.invoke("closeWindow",{},function(resp){
+            switch (resp.err_msg) {
+                // 关闭成功
+                case 'close_window:ok':
+                    callbacks.success && callbacks.success(resp);
+                    break;
+
+                // 关闭失败
+                default :
+                    callbacks.fail && callbacks.fail(resp);
+                    break;
+            }
+        });
     }
 
     /**
@@ -431,8 +451,99 @@ var WeixinApi = (function () {
         return /MicroMessenger/i.test(navigator.userAgent);
     }
 
+    /*
+     * 打开扫描二维码
+     * @param       {Object}    callbacks       回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功
+     */
+    function scanQRCode (callbacks) {
+        callbacks = callbacks || {};
+        WeixinJSBridge.invoke("scanQRCode",{},function(resp){
+            switch (resp.err_msg) {
+                // 打开扫描器成功
+                case 'scan_qrcode:ok':
+                    callbacks.success && callbacks.success(resp);
+                    break;
+
+                // 打开扫描器失败
+                default :
+                    callbacks.fail && callbacks.fail(resp);
+                    break;
+            }
+        });
+    }
+
+
+    /**
+     * 检测应用程序是否已安装 
+     *      by mingcheng 2014-10-17
+     *
+     * @param       {Object}    data            应用程序的信息
+     * @p-config    {String}    packageUrl      应用注册的自定义前缀，如 xxx:// 就取 xxx
+     * @p-config    {String}    packageName     应用的包名
+     *
+     * @param       {Object}    callbacks       相关回调方法
+     * @p-config    {Function}  fail(resp)      失败
+     * @p-config    {Function}  success(resp)   成功，如果有对应的版本信息，则写入到 resp.version 中
+     * @p-config    {Function}  all(resp)       无论成功失败都会执行的回调
+     */
+    function getInstallState(data, callbacks) {
+        callbacks = callbacks || {};
+
+        WeixinJSBridge.invoke("getInstallState", { 
+            "packageUrl": data.packageUrl || "",
+            "packageName": data.packageName || ""
+        }, function(resp) {
+            var msg = resp.err_msg, match = msg.match(/state:yes_?(.*)$/);
+            if (match) {
+                resp.version = match[1] || "";
+                callbacks.success && callbacks.success(resp);
+            } else {
+                callbacks.fail && callbacks.fail(resp);
+            }
+
+            callbacks.all && callbacks.all(resp);
+        });
+    }
+
+
+    /**
+     * 开启Api的debug模式，比如出了个什么错误，能alert告诉你，而不是一直很苦逼的在想哪儿出问题了
+     * @param    {Function}  callback(error) 出错后的回调，默认是alert
+     */
+    function enableDebugMode(callback){
+        /**
+         * @param {String}  errorMessage   错误信息
+         * @param {String}  scriptURI      出错的文件
+         * @param {Long}    lineNumber     出错代码的行号
+         * @param {Long}    columnNumber   出错代码的列号
+         */
+        window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber) {
+
+            // 有callback的情况下，将错误信息传递到options.callback中
+            if(typeof callback === 'function'){
+                callback({
+                    message : errorMessage,
+                    script : scriptURI,
+                    line : lineNumber,
+                    column : columnNumber
+                });
+            }else{
+                // 其他情况，都以alert方式直接提示错误信息
+                var msgs = [];
+                msgs.push("额，代码有错。。。");
+                msgs.push("\n错误信息：" , errorMessage);
+                msgs.push("\n出错文件：" , scriptURI);
+                msgs.push("\n出错位置：" , lineNumber + '行，' + columnNumber + '列');
+                alert(msgs.join(''));
+            }
+        }
+    }
+
     return {
-        version         :"2.1",
+        version         :"2.5",
+        enableDebugMode :enableDebugMode,
         ready           :wxJsBridgeReady,
         shareToTimeline :weixinShareTimeline,
         shareToWeibo    :weixinShareWeibo,
@@ -446,6 +557,8 @@ var WeixinApi = (function () {
         getNetworkType  :getNetworkType,
         imagePreview    :imagePreview,
         closeWindow     :closeWindow,
-        openInWeixin    :openInWeixin
+        openInWeixin    :openInWeixin,
+        getInstallState :getInstallState,
+        scanQRCode      :scanQRCode
     };
 })();
