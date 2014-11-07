@@ -138,21 +138,119 @@
 		this.stage.step();
 	};
 
+	function startStickAnime(leftStick, rightStick, leftWave, rightWave) {
+    	var t0 = Q.Tween.to(rightWave
+					, {alpha: 1}
+					, {
+						time: 500
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+		var t1 = Q.Tween.to(leftWave
+					, {alpha: 0}
+					, {
+						time: 500
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+    	var t2 = Q.Tween.to(leftStick
+					, {y: leftStick.y - 20}
+					, {
+						time: 500
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+    	var t3 = Q.Tween.to(rightStick
+					, {y: rightStick.y - 20}
+					, {
+						time: 500
+						, delay: 500
+						, loop: true
+						, reverse: true
+    				}
+    	);
+
+    	return function() {
+    		Q.Tween.remove(t0);
+	    	Q.Tween.remove(t1);
+	    	Q.Tween.remove(t2);
+	    	Q.Tween.remove(t3);
+	    	Q.Tween.to(rightWave
+						, {alpha: 0}
+						, {time: 500}
+	    	);
+
+			Q.Tween.to(leftWave
+						, {alpha: 0}
+						, {time: 500}
+	    	);
+    	};
+	};
+
 	game.displayPage2 = function() {	
 		if(this.startRollingPage == null) {
 			this.startRollingPage = buildBackground("startRollingPage", "page2");
 
-			var startRollingBtn = new Q.Button({id:"startRollingBtn", image: ns.R.getImage("button")});
-			startRollingBtn.setUpState({rect:[0,0,450,67]});
-			startRollingBtn.setOverState({rect:[0,0,450,67]});
-			startRollingBtn.width= 450;
-			startRollingBtn.height = 67;
+			var startBtnImg = ns.R.getImage("startButton");
+			var startRollingBtn = new Q.Button({id:"startRollingBtn", image: startBtnImg});
+			startRollingBtn.setUpState({rect:[0,0,startBtnImg.width,startBtnImg.height]});
+			startRollingBtn.setOverState({rect:[0,0,startBtnImg.width,startBtnImg.height]});
+			startRollingBtn.width= startBtnImg.width;
+			startRollingBtn.height = startBtnImg.height;
 			startRollingBtn.scaleX = this.startRollingPage.scaleX;
 			startRollingBtn.scaleY = this.startRollingPage.scaleY;
-			startRollingBtn.x = this.width * 0.15;
+			startRollingBtn.x = this.width * 0.133;
 			startRollingBtn.y = this.height * 0.53;
 			startRollingBtn.on(game.EVENTS.TAP, function(e) {
-				game.displayPage2b();
+				var stopAnime = startStickAnime(leftStick, rightStick, leftWave, rightWave);
+
+				var stopButtonImg = ns.R.getImage("stopButton");
+				var stopRollingBtn = new Q.Button({id:"stopRollingBtn", image: stopButtonImg});
+				stopRollingBtn.setUpState({rect:[0,0,stopButtonImg.width,stopButtonImg.height]});
+				stopRollingBtn.setOverState({rect:[0,0,stopButtonImg.width,stopButtonImg.height]});
+				stopRollingBtn.width= stopButtonImg.width;
+				stopRollingBtn.height = stopButtonImg.height;
+				stopRollingBtn.scaleX = game.startRollingPage.scaleX;
+				stopRollingBtn.scaleY = game.startRollingPage.scaleY;
+				stopRollingBtn.x = game.width * 0.133;
+				stopRollingBtn.y = game.height * 0.53;
+				stopRollingBtn.on(game.EVENTS.TAP, function(e) {
+					game.state = "complete";
+					game.point.stopRolling();
+					stopAnime();
+
+					var shrink = Q.Tween.to(game.point
+						, {alpha: 0.3}
+						, {time: 100, loop: true, reverse: true}
+			    	);
+
+					setTimeout(function() {
+						Q.Tween.remove(shrink);
+						game.displayPage3();
+					}, 1500);
+				});
+
+				game.stopRollingBtn = stopRollingBtn;
+
+				var point = new ns.Point({"id": "point", "image": ns.R.getImage("point")});
+				point.scaleX = game.startRollingPage.scaleX;
+		        point.scaleY = game.startRollingPage.scaleY;
+		        point.x = game.width * 0.822;
+		        point.y = game.height * 0.586 * 0.51933;
+				
+				game.point = point;
+
+				game.stage.addChild(game.stopRollingBtn, game.point);
+				game.stage.removeChildById(game.startRollingBtn);
+				
+				game.point.startRolling(game.width, game.height * 0.51933);
+				game.stage.step();
 			});
 
 			this.startRollingBtn = startRollingBtn;
@@ -201,70 +299,6 @@
 					, this.rightWave
 					, this.leftStick
 					, this.rightStick);
-		this.stage.step();
-
-    	Q.Tween.to(this.rightWave
-					, {alpha: 1}
-					, {
-						time: 600
-						, loop: true
-						, reverse: true
-    				}
-    	);
-
-		Q.Tween.to(this.leftWave
-					, {alpha: 0}
-					, {
-						time: 600
-						, loop: true
-						, reverse: true
-    				}
-    	);
-
-    	Q.Tween.to(this.leftStick
-					, {y: this.leftStick.y - 20}
-					, {
-						time: 600
-						, loop: true
-						, reverse: true
-    				}
-    	);
-
-    	Q.Tween.to(this.rightStick
-					, {y: this.rightStick.y - 20}
-					, {
-						time: 600
-						, delay: 600
-						, loop: true
-						, reverse: true
-    				}
-    	);
-	};
-
-	game.displayPage2b = function() {	
-		if(this.stopRollingPage == null) {
-			this.stopRollingPage = buildBackground("stopRollingPage", "page2b");
-
-			var stopRollingBtn = new Q.Button({id:"stopRollingBtn", image: ns.R.getImage("button")});
-			stopRollingBtn.setUpState({rect:[0,0,450,67]});
-			stopRollingBtn.setOverState({rect:[0,0,450,67]});
-			stopRollingBtn.width= 450;
-			stopRollingBtn.height = 67;
-			stopRollingBtn.scaleX = this.stopRollingPage.scaleX;
-			stopRollingBtn.scaleY = this.stopRollingPage.scaleY;
-			stopRollingBtn.x = this.width * 0.15;
-			stopRollingBtn.y = this.height * 0.53;
-			stopRollingBtn.on(game.EVENTS.TAP, function(e) {
-				game.state = "complete";
-				game.displayPage3();
-			});
-
-			this.stopRollingBtn = stopRollingBtn;
-		}
-		
-		this.stage.addChild(
-					this.stopRollingPage
-					, this.stopRollingBtn);
 		this.stage.step();
 	};
 
