@@ -6,9 +6,9 @@ var logger = require('morgan');
 // var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var wechat = require('./routes/wechat');
+var routes = require('./lib/routes/index');
+var users = require('./lib/routes/users');
+var wechat = require('./lib/routes/wechat');
 
 var app = express();
 
