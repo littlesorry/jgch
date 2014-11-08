@@ -18,13 +18,13 @@
         },
         "models": {
             "user": {
-                "wechatId": "String",
-                "couponId": "String",
-                "referred": "Number"
+                "openId": "String", 
+                "createTime": "Date"
             },
             "refer": {
-                "sourceUserId": "String",
-                "targetUserId": "String"
+                "sourceOpenId": "String",
+                "targetOpenId": "String", 
+                "createTime": "Date"
             }
         }
     }
