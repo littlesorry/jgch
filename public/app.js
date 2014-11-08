@@ -1,11 +1,18 @@
 (function() {
 
+    function getURLParam(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
+
 	var ns = Q.use("rolling");
 
 	var game = window.game = ns.game = {
 		frames: 0,
 		events: Q.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"],
-
+		params: Q.getUrlParams(),
 		state: "not_completed"
 	};
 
@@ -72,9 +79,6 @@
 		this.container = Q.getDOM("container");
 		this.width = this.container.clientWidth;
 		this.height = this.container.clientHeight;
-
-	    //获取URL参数设置
-		this.params = Q.getUrlParams();
 		
 		//初始化context
 		var context = null;
@@ -104,8 +108,11 @@
 
 		em.registerStage(this.stage, this.events);
 		
-		//显示开始菜单
-		this.displayPage1();
+		if (game.params.status === 'played') {
+			this.displayPage4();
+		} else {
+			this.displayPage1();
+		}
 	};
 
 	game.update = function(timeInfo) {
@@ -302,6 +309,10 @@
 		this.stage.step();
 	};
 
+	game.flowerCount = function() {
+		return game.params.refers;
+	};
+
 	game.displayPage3 = function() {
 		if(this.congratulationMask == null) {
 			this.congratulationMask = buildBackground("congratulationMask", "page3");
@@ -325,6 +336,7 @@
 		this.stage.addChild(
 					this.congratulationMask
 					, this.confirmCongratulationBtn);
+
 		this.stage.step();
 	};
 
@@ -376,12 +388,17 @@
 			});
 
 			this.exchangeBtn = exchangeBtn;
+			this.flowers = ns.Flower(game.flowerCount(), exchangeBtn.scaleX, exchangeBtn.scaleY);
 		}
 		
 		this.stage.addChild(
 					this.couponPage
 					, this.shareBtn
 					, this.exchangeBtn);
+		for (var i = 0; i < this.flowers.length; i++) {
+			this.stage.addChild(this.flowers[i]);
+		}
+		
 		this.stage.step();
 	};
 

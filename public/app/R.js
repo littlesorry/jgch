@@ -20,7 +20,8 @@
 		{id: "button", width: 423, src: "assets/button.png"},
 		{id: "startButton", width: 423, src: "assets/button_start.png"},
 		{id: "stopButton", width: 423, src: "assets/button_stop.png"},
-		{id: "point", width: 423, src: "assets/point.png"}
+		{id: "point", width: 423, src: "assets/point.png"},
+		{id: "orangeFlower", width: 423, src: "assets/flower_orange.png"}
 	];
 
 	R.init = function(images) {

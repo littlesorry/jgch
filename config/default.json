@@ -25,6 +25,10 @@
                 "sourceOpenId": "String",
                 "targetOpenId": "String", 
                 "createTime": "Date"
+            },
+            "exchange": {
+                "openId": "String",
+                "memberId": "String"
             }
         }
     }
