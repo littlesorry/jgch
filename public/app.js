@@ -13,7 +13,9 @@
 		frames: 0,
 		events: Q.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"],
 		params: Q.getUrlParams(),
-		state: "not_completed"
+		state: "not_completed",
+		outLink1: "http://www.baidu.com",
+		outLink2: "http://www.github.com"
 	};
 
 	function buildBackground(id, imageId) {
@@ -108,7 +110,7 @@
 
 		em.registerStage(this.stage, this.events);
 		
-		if (game.params.status === 'played') {
+		if (game.params.refers > 0) {
 			this.displayPage4();
 		} else {
 			this.displayPage1();
@@ -309,10 +311,6 @@
 		this.stage.step();
 	};
 
-	game.flowerCount = function() {
-		return game.params.refers;
-	};
-
 	game.displayPage3 = function() {
 		if(this.congratulationMask == null) {
 			this.congratulationMask = buildBackground("congratulationMask", "page3");
@@ -327,7 +325,9 @@
 			confirmCongratulationBtn.x = this.width * 0.05;
 			confirmCongratulationBtn.y = this.height * 0.14;
 			confirmCongratulationBtn.on(game.EVENTS.TAP, function(e) {
-				game.displayPage4();
+				$.get("/users", function() {
+					game.displayPage4();
+				});
 			});
 
 			this.confirmCongratulationBtn = confirmCongratulationBtn;
@@ -340,16 +340,22 @@
 		this.stage.step();
 	};
 
+	game.flowerCount = function() {
+		return game.params.refers;
+	};
+
+	game.getCouponImg = function() {
+		if (game.params.refers > 10) {
+			return "page4c";
+		} else if (game.params.refers > 5) {
+			return "page4b";
+		}
+		return "page4";
+	};
+
 	game.displayPage4 = function() {	
 		if(this.couponPage == null) {
-			var couponPage = new Q.Bitmap({id:"couponPage", image: ns.R.getImage("page4")});
-	        var sX = this.stage.width/couponPage.width;
-			var sY = this.stage.height/couponPage.height;
-	        couponPage.scaleX = sX;
-	        couponPage.scaleY = sY;
-	        couponPage.x = 0;
-	        couponPage.y = 0;
-			this.couponPage = buildBackground("couponPage", "page4");
+			this.couponPage = buildBackground("couponPage", game.getCouponImg());
 
 			var shareBtn = new Q.Button({id:"shareBtn", image: ns.R.getImage("button")});
 			shareBtn.setUpState({rect:[0,0,450,67]});
@@ -371,8 +377,20 @@
 
 			this.shareBtn = shareBtn;
 
-			// TODO, second button not used
+			var outerLinkBtn = new Q.Button({id: "outerLinkBtn", image: ns.R.getImage("button")});
+			outerLinkBtn.setUpState({rect:[0,0,450,67]});
+			outerLinkBtn.setOverState({rect:[0,0,450,67]});
+			outerLinkBtn.width= 450;
+			outerLinkBtn.height = 67;
+			outerLinkBtn.scaleX = this.couponPage.scaleX;
+			outerLinkBtn.scaleY = this.couponPage.scaleY;
+			outerLinkBtn.x = this.width * 0.15;
+			outerLinkBtn.y = this.height * 0.752;
+			outerLinkBtn.on(game.EVENTS.TAP, function(e) {
+				window.location = game.outLink1;
+			});
 
+			this.outerLinkBtn = outerLinkBtn;
 
 			var exchangeBtn = new Q.Button({id:"exchangeBtn", image: ns.R.getImage("button")});
 			exchangeBtn.setUpState({rect:[0,0,450,67]});
@@ -394,6 +412,7 @@
 		this.stage.addChild(
 					this.couponPage
 					, this.shareBtn
+					, this.outerLinkBtn
 					, this.exchangeBtn);
 		for (var i = 0; i < this.flowers.length; i++) {
 			this.stage.addChild(this.flowers[i]);
@@ -434,10 +453,15 @@
 			doSubmitBtn.x = this.width * 0.51;
 			doSubmitBtn.y = this.height * 0.585;
 			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
-				game.stage.removeChildById("exchangePage");
-				game.stage.removeChildById("doSubmitBtn");
-				game.stage.removeChildById("cancelSubmitBtn");
-				$("#memberIdInput").remove();
+				$.get("/exchange/?memberId=" + $("#memberIdInput").val(), function(response) {
+					if (response.status === 'ok') {
+						game.submitResultPage = buildBackground("submitResultPage", "page6a");
+					} else {
+						game.submitResultPage = buildBackground("submitResultPage", "page6b");
+					}
+					game.stage.addChild(game.submitResultPage);
+					game.stage.step();
+				})
 			});
 
 			this.doSubmitBtn = doSubmitBtn;
@@ -460,6 +484,21 @@
 			});
 
 			this.cancelSubmitBtn = cancelSubmitBtn;
+
+			var outerLinkBtn2 = new Q.Button({id: "outerLinkBtn2", image: ns.R.getImage("button")});
+			outerLinkBtn2.setUpState({rect:[0,0,260,50]});
+			outerLinkBtn2.setOverState({rect:[0,0,260,50]});
+			outerLinkBtn2.width= 260;
+			outerLinkBtn2.height = 50;
+			outerLinkBtn2.scaleX = this.couponPage.scaleX;
+			outerLinkBtn2.scaleY = this.couponPage.scaleY;
+			outerLinkBtn2.x = this.width * 0.13;
+			outerLinkBtn2.y = this.height * 0.51;
+			outerLinkBtn2.on(game.EVENTS.TAP, function(e) {
+				window.location = game.outLink2;
+			});
+
+			this.outerLinkBtn2 = outerLinkBtn2;
 		}
 		
 	    var phoneNumInput = Q.createDOM("input"
@@ -479,15 +518,16 @@
 							"text-align": "left",
 							"padding-left": "5px",
 							"color": "#333",
-							"z-index": $("#doSubmitBtn").css("z-index"),
+							"z-index": 9999,
 							"font": "20px 黑体"
 						}
 					});
 
 		this.stage.addChild(
 			this.exchangePage
+			, this.outerLinkBtn2
 			, this.doSubmitBtn
-				, this.cancelSubmitBtn);
+			, this.cancelSubmitBtn);
 		this.stage.step();
 
     	$("body").prepend(phoneNumInput);
