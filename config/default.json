@@ -1,6 +1,6 @@
 {
     "app": {
-        "wechatRequired": true,
+        "wechatRequired": false,
         "runtime": {
             "port": 9000
         },

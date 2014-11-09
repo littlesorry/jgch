@@ -29,3 +29,4 @@ node_modules
 
 # Customize
 $RESET
+nohup.out
