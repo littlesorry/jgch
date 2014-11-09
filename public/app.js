@@ -513,19 +513,20 @@
 						, type: "text"
 						, maxlength: 15
 						, placeholder: "卡号"
+						, required: "required"
 						, style : {
 							position:"absolute",
-							top : (game.height * 0.375) + "px",
-							left: (game.width * 0.45) + "px",
-							width: (game.width * 0.38)+ "px",
+							top : (game.height * 0.374) + "px",
+							left: (game.width * 0.4425) + "px",
+							width: (game.width * 0.392)+ "px",
 							height: 40 * game.cancelSubmitBtn.scaleY + "px",
 							background: "transparent",
 							border: "none",
 							"text-align": "left",
-							"padding-left": "5px",
+							"padding-left": "6px",
 							"color": "#333",
 							"z-index": 9999,
-							"font": "20px 黑体"
+							"font-size": "20px"
 						}
 					});
 
