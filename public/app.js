@@ -325,8 +325,12 @@
 			confirmCongratulationBtn.x = this.width * 0.05;
 			confirmCongratulationBtn.y = this.height * 0.14;
 			confirmCongratulationBtn.on(game.EVENTS.TAP, function(e) {
+				NProgress.start();
 				$.get("/users", function() {
-					game.displayPage4();
+					NProgress.done();
+					setTimeout(function() {
+						game.displayPage4();
+					}, 500);
 				});
 			});
 
@@ -453,7 +457,9 @@
 			doSubmitBtn.x = this.width * 0.51;
 			doSubmitBtn.y = this.height * 0.585;
 			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
+				NProgress.start();
 				$.get("/exchange/?memberId=" + $("#memberIdInput").val(), function(response) {
+					NProgress.done();
 					if (response.status === 'ok') {
 						game.submitResultPage = buildBackground("submitResultPage", "page6a");
 					} else {
