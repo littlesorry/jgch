@@ -2,7 +2,7 @@
     "app": {
         "wechatRequired": false,
         "runtime": {
-            "port": 9000
+            "port": 80
         },
         "integration": {
             "wechatAppId": "wx770d10bc9719912f",
