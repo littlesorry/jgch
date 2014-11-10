@@ -14,8 +14,8 @@
 		events: Q.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"],
 		params: Q.getUrlParams(),
 		state: "not_completed",
-		outLink1: "http://www.baidu.com",
-		outLink2: "http://www.github.com"
+		outLink1: "http://mp.weixin.qq.com/s?__biz=MzA4NzI0NTAwNQ==&mid=201028841&idx=1&sn=0adab2e9ffefd724f93c09eabf88051c#rd",
+		outLink2: "http://mp.weixin.qq.com/s?__biz=MzA4NzI0NTAwNQ==&mid=201030932&idx=1&sn=d395977806a33991287827e7ce3933db#rd‍"
 	};
 
 	function buildBackground(id, imageId) {
@@ -365,9 +365,53 @@
 		return "page4";
 	};
 
+	game.displayInstruction = function() {
+		if (this.instructionPage == null) {
+			this.instructionPage = buildBackground("instructionPage", "instructionPage");
+
+			var closeInstructionBtn = new Q.Button({id:"closeInstructionBtn", image: ns.R.getImage("button")});
+			closeInstructionBtn.setUpState({rect:[0,0,575,525]});
+			closeInstructionBtn.setOverState({rect:[0,0,575,525]});
+			closeInstructionBtn.width= 575;
+			closeInstructionBtn.height = 525;
+			closeInstructionBtn.scaleX = this.instructionPage.scaleX;
+			closeInstructionBtn.scaleY = this.instructionPage.scaleY;
+			closeInstructionBtn.x = this.width * 0.05;
+			closeInstructionBtn.y = this.height * 0.27;
+			closeInstructionBtn.on(game.EVENTS.TAP, function(e) {
+				game.stage.removeChildById("closeInstructionBtn");
+				game.stage.removeChildById("instructionPage");
+				game.stage.step();
+			});
+
+			this.closeInstructionBtn = closeInstructionBtn;
+		}
+
+		this.stage.addChild(
+			this.instructionPage
+			, this.closeInstructionBtn
+		);
+		this.stage.step();
+	};
+
 	game.displayPage4 = function() {	
 		if(this.couponPage == null) {
 			this.couponPage = buildBackground("couponPage", game.getCouponImg());
+
+			var instructionLink = new Q.Button({id:"instructionLink", image: ns.R.getImage("button")});
+			instructionLink.setUpState({rect:[0,0,200,50]});
+			instructionLink.setOverState({rect:[0,0,200,50]});
+			instructionLink.width= 200;
+			instructionLink.height = 50;
+			instructionLink.scaleX = this.couponPage.scaleX;
+			instructionLink.scaleY = this.couponPage.scaleY;
+			instructionLink.x = this.width * 0.13;
+			instructionLink.y = this.height * 0.56;
+			instructionLink.on(game.EVENTS.TAP, function(e) {
+				game.displayInstruction();
+			});
+
+			this.instructionLink = instructionLink;
 
 			var shareBtn = new Q.Button({id:"shareBtn", image: ns.R.getImage("button")});
 			shareBtn.setUpState({rect:[0,0,450,67]});
@@ -423,6 +467,7 @@
 		
 		this.stage.addChild(
 					this.couponPage
+					, this.instructionLink
 					, this.shareBtn
 					, this.outerLinkBtn
 					, this.exchangeBtn);
@@ -465,6 +510,16 @@
 			doSubmitBtn.x = this.width * 0.51;
 			doSubmitBtn.y = this.height * 0.585;
 			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
+				if($("#memberIdInput").val().length === 0 ) {
+					$("#memberIdInput").css({
+						"box-shadow": "0 0 8px #d00"
+					});
+					return;
+				}
+				
+				$("#memberIdInput").css({
+						"box-shadow": ""
+				});
 				NProgress.start();
 				$.get("/exchange/?_= " + Math.random() + "&memberId=" + $("#memberIdInput").val(), function(response) {
 					NProgress.done();
@@ -524,17 +579,18 @@
 						, required: "required"
 						, style : {
 							position:"absolute",
-							top : (game.height * 0.374) + "px",
-							left: (game.width * 0.4425) + "px",
-							width: (game.width * 0.392)+ "px",
+							top : (game.height * 0.37) + "px",
+							left: (game.width * 0.47) + "px",
+							width: (game.width * 0.38)+ "px",
 							height: 40 * game.cancelSubmitBtn.scaleY + "px",
-							background: "transparent",
-							border: "none",
+							background: "#fff",
+							border: "1px solid #bfbfbf",
 							"text-align": "left",
-							"padding-left": "6px",
+							"padding-left": "8px",
 							"color": "#333",
 							"z-index": 9999,
-							"font-size": "20px"
+							"font-size": "20px",
+							"letter-spacing": "2px"
 						}
 					});
 
@@ -543,9 +599,16 @@
 			, this.outerLinkBtn2
 			, this.doSubmitBtn
 			, this.cancelSubmitBtn);
-		this.stage.step();
 
     	$("body").prepend(phoneNumInput);
+    	$("#memberIdInput").attr({
+    		"maxlength": 6,
+    		"inputmode": "numeric",
+    		"pattern": "[0-9]*"
+    	});
+
+		this.stage.step();
+
 	};
 
 	$(function() {
