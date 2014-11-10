@@ -6,7 +6,7 @@
     var imgUrl = "http://www.autobund.com.cn:9000/assets/icon.png";
     var shareLink = "http://www.autobund.com.cn:9000/enter/";
 
-	var descContent = "我赢取了好途邦的洗车代金券！离免费代金券只差一步，快来赢取！【好途邦】";
+	var descContent = "我已经获得好途邦现金券！赶紧为我点击，金额还会增长！";
 
     WeixinApi.ready(function(Api) {
         var wxData = {

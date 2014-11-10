@@ -10,6 +10,7 @@
 		{id: "page4", width: 640, src: "assets/page_4.jpg"},
 		{id: "page4b", width: 640, src: "assets/page_4b.jpg"},
 		{id: "page4c", width: 640, src: "assets/page_4c.jpg"},
+		{id: "page4d", width: 640, src: "assets/page_4d.jpg"},
 		{id: "page5", width: 640, src: "assets/page_5.png"},
 		{id: "page6", width: 640, src: "assets/page_6.png"},
 		{id: "page6a", width: 640, src: "assets/page_6a.png"},

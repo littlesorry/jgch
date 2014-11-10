@@ -345,24 +345,32 @@
 	};
 
 	game.flowerCount = function() {
-		if (game.params.refers > 40) {
-			return 10;
-		} else if (game.params.refers > 10) {
-			return (game.params.refers - 10) / 3 + 1;	
-		}
+		var realRefers = game.params.refers - 1;
 
-		return game.params.refers;
+		if (realRefers < 5) {
+			// x < 5, 50
+			return realRefers*2;
+		} else if (realRefers < 24){
+			// 5 <= x <= 2*9 + 1 + 5, 100
+			return (realRefers - 5) / 2;
+		} else if (realRefers < 73) {
+			// 24 < x < 5*9 + 4 + 24, 300
+			return (realRefers - 24) / 5;
+		} else {
+			return 10;
+		}
 	};
 
 	game.getCouponImg = function() {
-		if (game.params.refers > 40) {
-			// 40 < x
-			return "page4c";
-		} else if (game.params.refers > 10) {
-			// 10 < x < 3 * 10
+		var realRefers = game.params.refers - 1;
+		if (realRefers < 5) {
+			return "page4";
+		} else if (realRefers < 24) {
 			return "page4b";
+		} else if (realRefers < 73) {
+			return "page4c"
 		}
-		return "page4";
+		return "page4d";
 	};
 
 	game.displayInstruction = function() {
@@ -516,7 +524,7 @@
 					});
 					return;
 				}
-				
+
 				$("#memberIdInput").css({
 						"box-shadow": ""
 				});
@@ -573,7 +581,7 @@
 	    var phoneNumInput = Q.createDOM("input"
 					, {
 						id:"memberIdInput"
-						, type: "text"
+						, type: "number"
 						, maxlength: 15
 						, placeholder: "卡号"
 						, required: "required"
@@ -603,6 +611,7 @@
     	$("body").prepend(phoneNumInput);
     	$("#memberIdInput").attr({
     		"maxlength": 6,
+    		"max": "999999",
     		"inputmode": "numeric",
     		"pattern": "[0-9]*"
     	});
