@@ -345,13 +345,21 @@
 	};
 
 	game.flowerCount = function() {
+		if (game.params.refers > 40) {
+			return 10;
+		} else if (game.params.refers > 10) {
+			return (game.params.refers - 10) / 3 + 1;	
+		}
+
 		return game.params.refers;
 	};
 
 	game.getCouponImg = function() {
-		if (game.params.refers > 10) {
+		if (game.params.refers > 40) {
+			// 40 < x
 			return "page4c";
-		} else if (game.params.refers > 5) {
+		} else if (game.params.refers > 10) {
+			// 10 < x < 3 * 10
 			return "page4b";
 		}
 		return "page4";
