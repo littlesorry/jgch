@@ -326,7 +326,7 @@
 			confirmCongratulationBtn.y = this.height * 0.14;
 			confirmCongratulationBtn.on(game.EVENTS.TAP, function(e) {
 				NProgress.start();
-				$.get("/users", function() {
+				$.get("/users?_=" + Math.random(), function() {
 					NProgress.done();
 					setTimeout(function() {
 						game.displayPage4();
@@ -458,7 +458,7 @@
 			doSubmitBtn.y = this.height * 0.585;
 			doSubmitBtn.on(game.EVENTS.TAP, function(e) {
 				NProgress.start();
-				$.get("/exchange/?memberId=" + $("#memberIdInput").val(), function(response) {
+				$.get("/exchange/?_= " + Math.random() + "&memberId=" + $("#memberIdInput").val(), function(response) {
 					NProgress.done();
 					if (response.status === 'ok') {
 						game.submitResultPage = buildBackground("submitResultPage", "page6a");
