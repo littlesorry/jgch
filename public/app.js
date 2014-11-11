@@ -31,6 +31,10 @@
 	};
 
 	game.bootstrap = function() {
+		if (!game.params.openId) {
+			window.location = '/enter/';
+		}
+
 		var container = Q.getDOM("container");
 		var div = document.createElement("div");
 		div.style.position = "absolute";
