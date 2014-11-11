@@ -31,7 +31,7 @@
 	};
 
 	game.bootstrap = function() {
-		if (!game.params.openId) {
+		if (!/debug/.test(location.search) && !game.params.openId) {
 			window.location = '/enter/';
 		}
 
