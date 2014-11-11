@@ -33,6 +33,11 @@
 	game.bootstrap = function() {
 		if (!/debug/.test(location.search) && !game.params.openId) {
 			window.location = '/enter/';
+			return;
+		}
+
+		if (/debug/.test(location.search) && !game.params.openId) {
+			game.params.openId = "debug_openId_" + Math.random();
 		}
 
 		var container = Q.getDOM("container");
