@@ -355,12 +355,12 @@
 		if (realRefers < 5) {
 			// x < 5, 50
 			return realRefers * 2;
-		} else if (realRefers < 14){
+		} else if (realRefers < 15){
 			// 5 <= x <= 1*9 + 5, 100
 			return (realRefers - 5);
-		} else if (realRefers < 43) {
-			// 14 < x < 3 * 9 + 2 + 14, 300
-			return (realRefers - 14) / 3;
+		} else if (realRefers < 44) {
+			// 14 < x < 3 * 9 + 2 + 15, 300
+			return (realRefers - 15) / 3;
 		} else {
 			return 10;
 		}
@@ -370,9 +370,9 @@
 		var realRefers = game.params.refers - 1;
 		if (realRefers < 5) {
 			return "page4";
-		} else if (realRefers < 24) {
+		} else if (realRefers < 15) {
 			return "page4b";
-		} else if (realRefers < 73) {
+		} else if (realRefers < 44) {
 			return "page4c"
 		}
 		return "page4d";
