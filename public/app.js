@@ -344,18 +344,23 @@
 		this.stage.step();
 	};
 
+	/**
+		50到100, 5个人点亮全部，一个人两朵花
+		100到300， 10个人点亮全部，一个人一朵花
+		300到1000， 30个人点亮全部，三个人一朵花 
+	 */
 	game.flowerCount = function() {
 		var realRefers = game.params.refers - 1;
 
 		if (realRefers < 5) {
 			// x < 5, 50
-			return realRefers*2;
-		} else if (realRefers < 24){
-			// 5 <= x <= 2*9 + 1 + 5, 100
-			return (realRefers - 5) / 2;
-		} else if (realRefers < 73) {
-			// 24 < x < 5*9 + 4 + 24, 300
-			return (realRefers - 24) / 5;
+			return realRefers * 2;
+		} else if (realRefers < 14){
+			// 5 <= x <= 1*9 + 5, 100
+			return (realRefers - 5);
+		} else if (realRefers < 43) {
+			// 14 < x < 3 * 9 + 2 + 14, 300
+			return (realRefers - 14) / 3;
 		} else {
 			return 10;
 		}
