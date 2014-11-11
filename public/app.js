@@ -428,7 +428,7 @@
 			instructionLink.scaleX = this.couponPage.scaleX;
 			instructionLink.scaleY = this.couponPage.scaleY;
 			instructionLink.x = this.width * 0.13;
-			instructionLink.y = this.height * 0.56;
+			instructionLink.y = this.height * 0.915;
 			instructionLink.on(game.EVENTS.TAP, function(e) {
 				game.displayInstruction();
 			});
