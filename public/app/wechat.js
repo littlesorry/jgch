@@ -9,6 +9,8 @@
 	var descContent = "我已经获得好途邦现金券！赶紧为我点击，金额还会增长！";
 
     WeixinApi.ready(function(Api) {
+        Api.showOptionMenu();
+
         var wxData = {
             "appId": "",
             "imgUrl" : imgUrl,
